@@ -32,7 +32,7 @@ export const u = {
 
 export const settings = {
   brushScale: 38, outline: 0.04,
-  lightAngle: -40, lightHeight: 50,
+  lightAngle: -75, lightHeight: 50,
   highlight: 0.66, shadowEdge: 0.45, coreShadow: 0.24, softness: 0.012, roughness: 0.03,
   shadows: true, grain: true, grainSpread: 0.12,
   fill: false, sandShadow: true, shadowLine: true,
