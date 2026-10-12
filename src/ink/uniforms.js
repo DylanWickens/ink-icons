@@ -11,7 +11,7 @@ export const u = {
   // band edges, in 0–1 light units
   lightAt: uniform(0.66),
   shadowAt: uniform(0.45),
-  coreAt: uniform(0.24),
+  coreAt: uniform(0.6),
   soft: uniform(0.012),
   shadowSteps: uniform(4),        // how many black tones the shadow is split into
   toneSoft: uniform(0.08),        // blur between those tones
@@ -36,7 +36,7 @@ export const u = {
 export const settings = {
   brushScale: 38, outline: 0.04,
   lightAngle: -40, lightHeight: 50,
-  highlight: 0.66, shadowEdge: 0.45, coreShadow: 0.24, softness: 0.012, roughness: 0.03,
+  highlight: 0.66, shadowEdge: 0.45, coreShadow: 0.6, softness: 0.012, roughness: 0.03,
   shadows: true, grain: true, grainSpread: 0.12,
   fill: false, sandShadow: true, shadowLine: true,
   // inner marks (symbols drawn on faces) — geometry, so changing these rebuilds the icon

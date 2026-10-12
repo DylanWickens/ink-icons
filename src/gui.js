@@ -12,7 +12,7 @@ export function createGui(inspector) {
   shading.add(settings, 'shadows').name('Shadows');
   shading.add(settings, 'highlight', 0.3, 1, 0.01).name('Highlight edge');
   shading.add(settings, 'shadowEdge', 0.1, 0.9, 0.01).name('Shadow edge');
-  shading.add(settings, 'coreShadow', 0, 0.6, 0.01).name('Core shadow');
+  shading.add(settings, 'coreShadow', 0, 0.9, 0.01).name('Core shadow');
   shading.add(settings, 'shadowSteps', 1, 8, 1).name('Shadow tones');
   shading.add(settings, 'toneSoft', 0, 0.5, 0.01).name('Tone softness');
   shading.add(settings, 'toneSmooth', 0, 1, 0.01).name('Tone blend');
