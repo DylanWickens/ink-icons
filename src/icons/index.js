@@ -18,24 +18,6 @@ export const icons = {
     },
   },
 
-  phone: {
-    label: 'Phone',
-    build() {
-      const g = new THREE.Group();
-      const curve = new THREE.CatmullRomCurve3([V3(-0.6, 0.75), V3(-0.64, 0.05), V3(-0.1, -0.5), V3(0.65, -0.7)], false, 'centripetal');
-      g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 64, 0.17, 16, false), inkMaterial));
-      for (const t of [0, 1]) {
-        const p = curve.getPoint(t), tan = curve.getTangent(t);
-        const cap = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.45, 8, 16), inkMaterial);
-        cap.quaternion.setFromUnitVectors(V3(0, 1, 0), V3(-tan.y, tan.x, 0).normalize());
-        cap.position.copy(p);
-        g.add(cap);
-      }
-      g.rotation.set(0.2, -0.4, 0);
-      return g;
-    },
-  },
-
   laptop: {
     label: 'Download',
     build() {
