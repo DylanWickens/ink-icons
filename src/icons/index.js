@@ -1,5 +1,8 @@
 import * as THREE from 'three/webgpu';
-import { V3, RB, mesh, inkTube, check, plus, bubbleGeometry, lockBody } from './parts.js';
+import {
+  V3, RB, mesh, check, bubbleGeometry, lockBody,
+  inkMark, checkMark, plusMark, rectMark, BUBBLE_FACE, LOCK_FACE,
+} from './parts.js';
 import { inkMaterial } from '../ink/inkMaterial.js';
 
 // Each icon is a function returning a THREE.Group. Order here = button order in the UI.
@@ -9,7 +12,7 @@ export const icons = {
     build() {
       const g = new THREE.Group();
       g.add(mesh(RB(2.3, 1.55, 0.3, 0.12, 5)));
-      g.add(inkTube([[-1.0, 0.64], [0, -0.08], [1.0, 0.64]], 0.08, 0.17));
+      g.add(inkMark({ strokes: [[[-1.0, 0.62], [0, -0.06]], [[0, -0.06], [1.0, 0.62]]], r: 0.07, z: 0.15 }));
       g.rotation.set(0.1, -0.35, 0);
       return g;
     },
@@ -40,10 +43,10 @@ export const icons = {
       g.add(mesh(RB(2.4, 0.1, 1.5, 0.05, 4), 0, 0, 0.1));
       const screen = new THREE.Group();
       screen.add(mesh(RB(2.0, 1.35, 0.12, 0.08, 4)));
-      screen.add(mesh(RB(0.16, 0.5, 0.12, 0.05, 3), 0, 0.15, 0.1));
-      const head = new THREE.ConeGeometry(0.28, 0.32, 24);
-      head.rotateZ(Math.PI);
-      screen.add(mesh(head, 0, -0.24, 0.1));
+      screen.add(inkMark({
+        strokes: [[[0, 0.38], [0, -0.3]], [[-0.24, -0.06], [0, -0.3]], [[0.24, -0.06], [0, -0.3]]],
+        r: 0.065, z: 0.06,
+      }));
       screen.position.set(0, 0.72, -0.62);
       screen.rotation.x = -0.22;
       g.add(screen);
@@ -57,7 +60,7 @@ export const icons = {
     build() {
       const g = new THREE.Group();
       g.add(mesh(bubbleGeometry()));
-      g.add(check(0, 0, 1.4, 0.27, 0.1));
+      g.add(checkMark(1.4, BUBBLE_FACE));
       g.rotation.y = -0.35;
       return g;
     },
@@ -68,7 +71,7 @@ export const icons = {
     build() {
       const g = new THREE.Group();
       g.add(mesh(bubbleGeometry()));
-      g.add(plus(1, 0.27));
+      g.add(plusMark(1, BUBBLE_FACE));
       g.rotation.y = 0.35;
       return g;
     },
@@ -133,7 +136,7 @@ export const icons = {
     label: 'Lock plus',
     build() {
       const g = lockBody(false);
-      const p = plus(0.9, 0.42);
+      const p = plusMark(0.9, LOCK_FACE);
       p.position.y = 0.72;
       g.add(p);
       g.rotation.y = 0.35;
@@ -186,8 +189,11 @@ export const icons = {
       roof.translate(0, 0, -0.86);
       g.add(mesh(roof, 0, 1.3, 0));
       g.add(mesh(RB(0.28, 0.6, 0.28, 0.06, 4), 0.48, 1.95, -0.25));   // chimney
-      g.add(mesh(RB(0.46, 0.72, 0.12, 0.05, 4), -0.3, 0.4, 0.76));    // door
-      g.add(mesh(RB(0.42, 0.42, 0.1, 0.05, 4), 0.45, 0.78, 0.76));    // window
+      const door = rectMark(0.42, 0.66, 0.75, { open: true });        // drawn on the front wall
+      door.position.set(-0.3, 0.36, 0);
+      const win = rectMark(0.38, 0.38, 0.75);
+      win.position.set(0.45, 0.78, 0);
+      g.add(door, win);
       g.add(mesh(RB(2.4, 0.14, 2.2, 0.06, 4), 0, -0.07, 0));          // base
       return g;
     },

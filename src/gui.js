@@ -27,5 +27,11 @@ export function createGui(inspector) {
   vector.add(settings, 'sandShadow').name('Sand shadow');
   vector.add(settings, 'shadowLine').name('Shadow line');
 
+  const marks = gui.addFolder('Inner strokes');
+  marks.add(settings, 'markWeight', 0.3, 2.5, 0.05).name('Weight');
+  marks.add(settings, 'markShadow').name('Drop shadow');
+  marks.add(settings, 'markShadowOffset', 0, 0.15, 0.005).name('Shadow offset');
+  marks.add(settings, 'markShadowAngle', -180, 180, 1).name('Shadow angle');
+
   return gui;
 }

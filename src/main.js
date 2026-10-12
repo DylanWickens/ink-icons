@@ -3,7 +3,7 @@ import * as THREE from 'three/webgpu';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Inspector } from 'three/addons/inspector/Inspector.js';
 
-import { u, syncUniforms } from './ink/uniforms.js';
+import { u, settings, syncUniforms } from './ink/uniforms.js';
 import { inkMaterial } from './ink/inkMaterial.js';
 import { addOutlines } from './ink/outline.js';
 import { HEX } from './ink/palette.js';
@@ -30,7 +30,10 @@ async function loadTSLGraph(inspector) {
 }
 
 async function init() {
-  const renderer = new THREE.WebGPURenderer({ antialias: true });
+  const renderer = new THREE.WebGPURenderer({
+    antialias: true,
+    forceWebGL: new URLSearchParams(location.search).has('webgl'),   // ?webgl to test the WebGL2 backend
+  });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   stage.appendChild(renderer.domElement);
   renderer.inspector = new Inspector();
@@ -60,7 +63,7 @@ async function init() {
 
   // ---- icon switching: build, outline, centre and normalise to one framing ----
   const buttons = document.getElementById('icon-buttons');
-  let current = null;
+  let current = null, currentName = null;
 
   function show(name) {
     if (current) scene.remove(current);
@@ -76,6 +79,7 @@ async function init() {
     wrap.scale.setScalar(2.5 / Math.max(size.x, size.y, size.z));
     scene.add(wrap);
     current = wrap;
+    currentName = name;
 
     document.getElementById('name').textContent = `Ink ${icons[name].label}`;
     for (const b of buttons.children) b.setAttribute('aria-pressed', b.dataset.icon === name);
@@ -100,8 +104,14 @@ async function init() {
   createGui(renderer.inspector);
   loadTSLGraph(renderer.inspector);
 
+  // inner-stroke settings change geometry, so rebuild the current icon when they move
+  const markKey = () => [settings.markWeight, settings.markShadow, settings.markShadowOffset, settings.markShadowAngle].join();
+  let lastMarkKey = markKey();
+
   renderer.setAnimationLoop(() => {
     syncUniforms();
+    const k = markKey();
+    if (k !== lastMarkKey) { lastMarkKey = k; show(currentName); }
     controls.update();
     renderer.render(scene, camera);
   });

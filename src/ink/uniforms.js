@@ -30,6 +30,8 @@ export const settings = {
   highlight: 0.66, shadowEdge: 0.45, coreShadow: 0.24, softness: 0.012, roughness: 0.03,
   shadows: true, grain: true, grainSpread: 0.12,
   fill: false, sandShadow: true, shadowLine: true,
+  // inner marks (symbols drawn on faces) — geometry, so changing these rebuilds the icon
+  markWeight: 1, markShadow: true, markShadowOffset: 0.045, markShadowAngle: -45,
 };
 
 const lastLight = { az: NaN, el: NaN };
