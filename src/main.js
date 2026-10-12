@@ -102,6 +102,7 @@ async function init() {
   }));
 
   createGui(renderer.inspector);
+  if (import.meta.env.DEV) window.inkSettings = settings;   // poke settings from the console while developing
   loadTSLGraph(renderer.inspector);
 
   // inner-stroke settings change geometry, so rebuild the current icon when they move

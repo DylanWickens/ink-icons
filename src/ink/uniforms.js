@@ -22,6 +22,12 @@ export const u = {
   termLine: uniform(1),          // vector mode: line along the shadow edge
 
   outline: uniform(0.04),
+  outlineNoise: uniform(1),      // how much the brush outline swells and thins
+
+  // inner marks: noise eating into the stroke edges + dry-brush grain gaps
+  markRough: uniform(0.35),
+  markGrain: uniform(0.0),
+  markScale: uniform(1),
 };
 
 export const settings = {
@@ -32,6 +38,7 @@ export const settings = {
   fill: false, sandShadow: true, shadowLine: true,
   // inner marks (symbols drawn on faces) — geometry, so changing these rebuilds the icon
   markWeight: 1, markShadow: true, markShadowOffset: 0.045, markShadowAngle: -45,
+  markRough: 0.35, markGrain: 0, markScale: 1, outlineNoise: 1,
 };
 
 const lastLight = { az: NaN, el: NaN };
@@ -57,6 +64,10 @@ export function syncUniforms() {
   u.fill.value = b(s.fill);
   u.shadowFill.value = b(s.sandShadow);
   u.termLine.value = b(s.shadowLine);
+  u.outlineNoise.value = s.outlineNoise;
+  u.markRough.value = s.markRough;
+  u.markGrain.value = s.markGrain;
+  u.markScale.value = s.markScale;
 }
 
 syncUniforms();

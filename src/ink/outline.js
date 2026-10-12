@@ -9,8 +9,10 @@ import { CORE } from './palette.js';
 export const outlineMaterial = new THREE.MeshBasicNodeMaterial({ side: THREE.BackSide });
 outlineMaterial.colorNode = CORE;
 outlineMaterial.positionNode = Fn(() => {
-  const width = mx_noise_float(positionLocal.mul(2.6)).mul(0.55).add(1.0)
-    .mul(mx_noise_float(positionLocal.mul(9.0).add(5.0)).mul(0.2).add(1.0));
+  const k = u.outlineNoise;   // 0 = even line, 1 = default wobble, 3 = very rough
+  const width = mx_noise_float(positionLocal.mul(2.6)).mul(k.mul(0.55)).add(1.0)
+    .mul(mx_noise_float(positionLocal.mul(9.0).add(5.0)).mul(k.mul(0.2)).add(1.0))
+    .max(0.0);
   return positionLocal.add(normalLocal.mul(u.outline.mul(width)));
 })();
 

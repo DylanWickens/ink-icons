@@ -2,7 +2,8 @@ import * as THREE from 'three/webgpu';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { inkMaterial } from '../ink/inkMaterial.js';
 import { HEX } from '../ink/palette.js';
-import { settings } from '../ink/uniforms.js';
+import { settings, u } from '../ink/uniforms.js';
+import { Fn, vec3, abs, step, normalLocal, positionLocal, mx_noise_float } from 'three/tsl';
 
 // Small building blocks shared by the icons.
 
@@ -34,9 +35,27 @@ export const check = (cx, cy, s = 1, z = 0, r = 0.09) =>
 // ---- Flat ink marks: symbols drawn ON a face, not built as objects ----
 // Flat black, plus a sand copy offset down-right as a printed drop shadow.
 // polygonOffset pulls them in front of the face without z-fighting.
-const flat = (color, offset) => new THREE.MeshBasicNodeMaterial({
-  color, polygonOffset: true, polygonOffsetFactor: offset, polygonOffsetUnits: offset,
-});
+// Brushy mask shared by the ink and its shadow, so the shadow keeps the same ragged shape.
+// The marks are tubes squashed flat, so their geometry normal still points out from the stroke's
+// centre line: |normal.z| is 1 down the middle and falls to 0 at the edge. Noise eats into that.
+const markMask = Fn(() => {
+  const centre = abs(normalLocal.z);
+  const p = positionLocal.mul(u.markScale);
+  const edge = mx_noise_float(p.mul(5.0)).mul(0.6).add(mx_noise_float(p.mul(14.0).add(3.0)).mul(0.4));
+  const grain = mx_noise_float(p.mul(45.0).add(7.0)).mul(0.5).add(0.5);   // dry-brush specks
+  const ink = centre.sub(edge.mul(u.markRough)).sub(grain.mul(u.markGrain));
+  return step(0.12, ink);
+})();
+
+const flat = (color, offset) => {
+  const m = new THREE.MeshBasicNodeMaterial({
+    polygonOffset: true, polygonOffsetFactor: offset, polygonOffsetUnits: offset,
+  });
+  m.colorNode = vec3(...new THREE.Color(color).toArray());
+  m.opacityNode = markMask;
+  m.alphaTest = 0.5;            // hard cut: ink lands or it doesn't
+  return m;
+};
 const markInk = flat(HEX.core, -4);
 const markShadow = flat(HEX.stone, -2);
 

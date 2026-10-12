@@ -18,6 +18,7 @@ export function createGui(inspector) {
   const brush = gui.addFolder('Brush');
   brush.add(settings, 'brushScale', 18, 70, 1).name('Brush scale');
   brush.add(settings, 'outline', 0, 0.1, 0.001).name('Outline');
+  brush.add(settings, 'outlineNoise', 0, 3, 0.05).name('Outline noise');
   brush.add(settings, 'roughness', 0, 0.15, 0.001).name('Roughness');
   brush.add(settings, 'grain').name('Shadow grain');
   brush.add(settings, 'grainSpread', 0.01, 0.4, 0.01).name('Grain spread');
@@ -29,6 +30,9 @@ export function createGui(inspector) {
 
   const marks = gui.addFolder('Inner strokes');
   marks.add(settings, 'markWeight', 0.3, 2.5, 0.05).name('Weight');
+  marks.add(settings, 'markRough', 0, 1.2, 0.01).name('Edge noise');
+  marks.add(settings, 'markGrain', 0, 1.2, 0.01).name('Dry-brush grain');
+  marks.add(settings, 'markScale', 0.3, 4, 0.05).name('Noise scale');
   marks.add(settings, 'markShadow').name('Drop shadow');
   marks.add(settings, 'markShadowOffset', 0, 0.15, 0.005).name('Shadow offset');
   marks.add(settings, 'markShadowAngle', -180, 180, 1).name('Shadow angle');
