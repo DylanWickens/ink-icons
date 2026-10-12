@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ink Icons</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500&family=IBM+Plex+Mono&display=swap" />
+  </head>
+  <body>
+    <div id="stage"><div id="err" hidden></div></div>
+    <footer>
+      <h1 id="name">Ink House</h1>
+      <div class="pills" id="icon-buttons" role="group" aria-label="Icon"></div>
+      <div class="pills" role="group" aria-label="Style">
+        <button data-mode="0" aria-pressed="true">v4 · Ink</button>
+        <button data-mode="1" aria-pressed="false">v5 · Vector</button>
+      </div>
+      <span>Controls live in the Inspector · drag to orbit</span>
+    </footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

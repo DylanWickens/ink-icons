@@ -1,0 +1,42 @@
+:root {
+  --paper: #fdfcfb;
+  --ink: #050807;
+  --muted: #515453;
+  --line: #dacbc0;
+  --display: "Fraunces", Georgia, serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html, body { height: 100%; margin: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  display: flex;
+  flex-direction: column;
+  padding-inline: 16px;
+  box-sizing: border-box;
+}
+
+#stage { flex: 1; min-height: 320px; position: relative; }
+#stage canvas { display: block; width: 100% !important; height: 100% !important; touch-action: none; }
+
+footer {
+  display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; justify-content: space-between;
+  padding-block: 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted);
+}
+h1 { font-family: var(--display); font-weight: 500; font-size: 20px; margin: 0; color: var(--ink); }
+
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pills button {
+  font: inherit; font-size: 12px; color: var(--ink); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+}
+.pills button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.pills button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+#err {
+  position: absolute; top: 12px; left: 12px; right: 12px; padding: 10px 12px; font-size: 12px;
+  background: var(--paper); border: 1px solid var(--line); pointer-events: none; white-space: pre-wrap;
+}
