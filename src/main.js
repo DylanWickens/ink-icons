@@ -92,7 +92,7 @@ async function init() {
     b.addEventListener('click', () => show(name));
     buttons.append(b);
   }
-  show('house');
+  show('gear');
 
   // ---- style toggle (v4 ink / v5 vector) ----
   const modeButtons = document.querySelectorAll('[data-mode]');
