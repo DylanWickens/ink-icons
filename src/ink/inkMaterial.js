@@ -4,7 +4,7 @@ import {
   dot, normalize, max, smoothstep, mix, mx_noise_float, clamp, cross, abs, step,
 } from 'three/tsl';
 import { u } from './uniforms.js';
-import { PAPER, STONE, SHADOW, CORE, HEX } from './palette.js';
+import { PAPER, STONE, SHADOW, CORE, ONYX_300, ONYX_400, ONYX_200, HEX } from './palette.js';
 
 // Cartoon ink: flat cel bands (paper → stone → ink shadow → core black).
 // Only the band edges are brushy, so it reads as inked shapes, not texture all over.
@@ -26,7 +26,6 @@ const inkShader = Fn(() => {
   const lb = lum.add(edgeNoise.mul(u.rough));
   const toLight = smoothstep(u.lightAt, u.lightAt.add(u.soft), lb);
   const toMid0 = smoothstep(u.shadowAt, u.shadowAt.add(u.soft), lb);
-  const toShadow0 = smoothstep(u.coreAt, u.coreAt.add(u.soft), lb);
 
   // dry-brush grain on the lit side of each shadow edge: ink thins out with distance from the edge
   const grain = mx_noise_float(p.mul(60.0)).mul(0.6)
@@ -38,9 +37,21 @@ const inkShader = Fn(() => {
   };
   const noShadow = float(1.0).sub(u.shadows);                   // shadows off → past both edges
   const toMid = max(toMid0.mul(float(1.0).sub(grainy(u.shadowAt))), noShadow);
-  const toShadow = max(toShadow0.mul(float(1.0).sub(grainy(u.coreAt))), noShadow);
 
-  const filled = mix(mix(mix(CORE, SHADOW, toShadow), STONE, toMid), PAPER, toLight);
+  // ---- shadow tones: a ramp of Onyx blacks from the shadow edge down to the core ----
+  // t: 0 at the core shadow → 1 at the shadow edge.
+  const t = clamp(lb.sub(u.coreAt).div(max(u.shadowAt.sub(u.coreAt), 0.001)), 0.0, 1.0);
+  // Posterise t into `shadowSteps` flat bands (cel look). toneSoft blurs the band edges;
+  // toneSmooth blends back toward the continuous gradient.
+  const f = t.mul(u.shadowSteps).sub(0.5);
+  const banded = f.floor().add(smoothstep(float(0.5).sub(u.toneSoft), float(0.5).add(u.toneSoft), f.fract()));
+  const stepped = clamp(banded.div(max(u.shadowSteps.sub(1.0), 1.0)), 0.0, 1.0);
+  const tone = mix(stepped, t, u.toneSmooth);
+  // ramp: Onyx 700 → 450 → 400 → 300 → 200 (darkest at the core, lightest at the edge)
+  const seg = (a, b) => clamp(tone.sub(a).div(b - a), 0.0, 1.0);
+  const shadowCol = mix(mix(mix(mix(CORE, SHADOW, seg(0.0, 0.25)), ONYX_400, seg(0.25, 0.5)), ONYX_300, seg(0.5, 0.75)), ONYX_200, seg(0.75, 1.0));
+
+  const filled = mix(mix(shadowCol, STONE, toMid), PAPER, toLight);
 
   // v5 vector: inner contours where the surface turns away + the shadow edge as one brushy path
   const V = normalize(cameraPosition.sub(positionWorld));

@@ -13,6 +13,9 @@ export const u = {
   shadowAt: uniform(0.45),
   coreAt: uniform(0.24),
   soft: uniform(0.012),
+  shadowSteps: uniform(4),        // how many black tones the shadow is split into
+  toneSoft: uniform(0.08),        // blur between those tones
+  toneSmooth: uniform(0),         // 0 = flat bands, 1 = continuous gradient
   rough: uniform(0.03),
 
   shadows: uniform(1),
@@ -39,6 +42,7 @@ export const settings = {
   // inner marks (symbols drawn on faces) — geometry, so changing these rebuilds the icon
   markWeight: 1, markShadow: true, markShadowOffset: 0.045, markShadowAngle: -45,
   markRough: 0.35, markGrain: 0, markScale: 1, outlineNoise: 1,
+  shadowSteps: 4, toneSoft: 0.08, toneSmooth: 0,
 };
 
 const lastLight = { az: NaN, el: NaN };
@@ -57,6 +61,9 @@ export function syncUniforms() {
   u.shadowAt.value = s.shadowEdge;
   u.coreAt.value = s.coreShadow;
   u.soft.value = s.softness;
+  u.shadowSteps.value = s.shadowSteps;
+  u.toneSoft.value = s.toneSoft;
+  u.toneSmooth.value = s.toneSmooth;
   u.rough.value = s.roughness;
   u.shadows.value = b(s.shadows);
   u.grain.value = b(s.grain);
